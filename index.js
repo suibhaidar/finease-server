@@ -36,7 +36,33 @@ async function run() {
      const transactionCollection = db.collection('transactions')
 
 
+     app.get('/transactions',async(req,res)=>{ 
+      const email = req.query.email; 
+        const query = {};
+        if (email) {
+        query.email = email; 
+    }
+        const cursor = transactionCollection.find(query);
+        const result = await cursor.toArray();
+        res.send(result);
+    })
+
+    app.post('/transactions',async(req,res) =>{
+      const data = req.body
+      const email = req.body.email;
+      console.log(data,email)
+      const result = transactionCollection.insertOne(data)
+      res.send({
+        success: true
+      })
+    })
     
+    app.delete('/transactions/:id', async(req,res) => {
+        const id = req.params.id;
+        const query = {_id: new ObjectId(id)}
+        const result = await transactionCollection.deleteOne(query);
+        res.send(result);
+    })
    
 
 
