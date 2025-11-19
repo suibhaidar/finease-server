@@ -42,12 +42,18 @@ async function run() {
       if (email) {
         query.email = email;
       }
-      const cursor = transactionCollection.find(query);
+      const cursor = transactionCollection.find(query).sort({date: -1});
       const result = await cursor.toArray();
       res.send(result);
     })
 
-    
+    app.get('/transactions/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+
+      const result = await transactionCollection.findOne(query);
+      res.send(result);
+    });
 
     app.post('/transactions', async (req, res) => {
       const data = req.body
